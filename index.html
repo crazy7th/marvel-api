@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="Ekky Patria Kencana">
+        <link rel="icon" href="favicon.ico">
+
+        <title>Marvel API - Character Database</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- -begin- Bootstrap core CSS -->
+        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/bootstrap.min.css" />
+        <!-- -end- Bootstrap core CSS -->
+
+        <!-- -begin- Flaticon -->
+        <link rel="stylesheet" type="text/css" href="assets/font/flaticon.css" />
+        <!-- -end- Flaticon -->
+
+        <link rel="stylesheet" type="text/css" href="assets/css/marvel.css" />
+    </head>
+    <body>
+        <div id="app">
+            <div id="formSearch">
+                <a href="#" id="closeForm"><span class="flaticon-cancel"></span></a>
+                <input type="text" id="findCharacter" placeholder="Input character name...">
+            </div>
+
+            <!-- Header -->
+            <header>
+                <nav class="navbar">
+                    <div class="logo mx-auto">
+                        <a href="index.html"><img src="assets/img/logo_marvel.png" alt="marvel"></a>
+                    </div>
+                    <div class="search">
+                        <a href="#" id="openSearch" class="openSearch"><span class="flaticon-magnifying-glass" alt="find marvel character"></span></a>
+                    </div>
+                </nav>
+            </header>
+
+            <!-- Content of Marvel -->
+            <div class="container body-container">
+                <p class="loading-message text-center absolute-center" id="message"></p>
+
+                <div id="marvelCharacter">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2>CHARACTER: LISTS</h2>
+                            <p id="countCharacter"><span id="currentCount"><b>0</b></span> of <span id="totalCount"><b>0</b></span> characters loaded</p>
+                        </div>
+                    </div>
+
+                    <!-- Data of Marvel will loaded here -->
+                    <div id="marvelContainer"></div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="loadMore" class="text-center">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="marvelResult">
+                    <div class="text-center col-md-6 m-auto">
+                        <div class="marvelChar">
+                            <!-- Element to show Filter result -->
+                            <div id="marvelFinder"></div>
+                            <div class="filter-action">
+                                <button id="hapusFilter" class="btn btn-danger">View All</button>
+                                <button id="openFilter" class="btn btn-outline-danger openSearch">Search Again</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="marvelComics"></div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer text-center">
+                <p id="footer"></p>
+            </footer>
+        </div>
+
+        <!-- JAVASCRIPT -->
+        <script src="assets/js/jquery.min.js"></script>
+        <!-- -begin- Bootstrap core JS -->
+        <script src="assets/js/bootstrap.min.js"></script>
+        <!-- -end- Bootstrap core JS -->
+
+        <!-- -begin- Marvel JS -->
+        <script src="assets/js/marvel.js"></script>
+    </body>
+</html>
