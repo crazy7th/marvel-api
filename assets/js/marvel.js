@@ -1,5 +1,6 @@
 var queryArr = [];
 var string = "";
+var startData = 0;
 
 // mendefinisikan variable untuk status saat melakukan 'GET' dari API
 var message = document.getElementById("message");
@@ -61,52 +62,21 @@ function marvel(offset) {
 
             $("#marvelCharacter").show();
 
-            // mempersiapkan variable dinamis yang dapat diisi dengan content pada API data Marvel characters
-            string += "<div class='row'>"; // DEFINISI-2, sekedar penanda untuk memudahkan
-
-            // loop, untuk mengeluarkan semua data
             // karena akan dikeluarkan berupa images & nama, maka cukup array di data.data.results (.length utk mengetahui batas ujung data)
             for (var i = 0; i < data.data.results.length; i++) {
                 // persingkat data yang akan digunakan pada array ke 'i', dimana nantinya akan dikeluarkan nama & images
                 var element = data.data.results[i];
+                var img_url = element.thumbnail.path + "/standard_fantastic." + element.thumbnail.extension;
+                var deskripsi = element.description;
+                var num_comic = element.comics.available;
 
-
-                // mengeluarkan data dalam 4 kolom (12 dibagi 4 = 3, jadi dibutuhkan col-3)
-                string += "<div class='col-md-3 marvelChar'>";
-
-                    // hyperlink untuk melihat detail (ini open in new page)
-                    //string += "<a href='detail.html?id=" + element.id + "' target='_blank'>";
-
-                    // hyperlink untuk melihat detail
-                    //string += "<a href='detail.html?id=" + element.id + "'>";
-                    string += "<a href='#' onclick='Comics(" + element.id + ")'>";
-
-                        // keluarkan img thumbnail
-                        var img_url = element.thumbnail.path + "/standard_fantastic." + element.thumbnail.extension;
-                        string += "<img src=" + img_url + " class='thumb'>";
-
-                        // baca deskripsi untuk menampilkan saat suatu karakter di click
-                        var deskripsi = element.description;
-
-                        // keluarkan nama karakter
-                        string += "<p>" + element.name + "</p>";
-
-                    string += "</a>";
-                string += "</div>";
-
-
-                // check untuk setiap 4 data yang dikeluarkan, buatkan row baru (supaya bisa lebih dinamis dengan DEFINISI-2)
-                if ( (i+1) % 4 == 0) {
-                    string += "</div>";
-                    string += "<div class='row'>";
-                }
-
-                queryStr = { "id" : element.id, "name" : element.name, "thumb" : img_url, "description" : deskripsi };
+                queryStr = { "id" : element.id, "name" : element.name, "thumb" : img_url, "description" : deskripsi, "num_comic" : num_comic };
                 queryArr.push(queryStr);
             }
 
-            string += "</div>";
             console.log(queryArr);
+
+            showData();
 
             // munculkan ke element HTML yg sudah didefinisikan pada DEFINISI-1
             marvelContainer.innerHTML = string;
@@ -230,6 +200,52 @@ function Comics(character_id) {
     });
 };
 
+function showData() {
+    // mempersiapkan variable dinamis yang dapat diisi dengan content pada API data Marvel characters
+    string += "<div class='row'>"; // DEFINISI-2, sekedar penanda untuk memudahkan
+
+    // loop, untuk mengeluarkan semua data
+    // karena akan dikeluarkan berupa images & nama, maka cukup array di data.data.results (.length utk mengetahui batas ujung data)
+    for (var i = 0; i < queryArr.length; i++) {
+        // persingkat data yang akan digunakan pada array ke 'i', dimana nantinya akan dikeluarkan nama & images
+        var storageArray = queryArr[i];
+
+        //queryStr = { "id" : element.id, "name" : element.name, "thumb" : img_url, "description" : deskripsi, "num_comic" : num_comic };
+
+        // mengeluarkan data dalam 4 kolom (12 dibagi 4 = 3, jadi dibutuhkan col-3)
+        string += "<div class='col-md-3 marvelChar'>";
+
+            // hyperlink untuk melihat detail (ini open in new page)
+            //string += "<a href='detail.html?id=" + storageArray.id + "' target='_blank'>";
+
+            // hyperlink untuk melihat detail
+            string += "<a href='#' onclick='Comics(" + storageArray.id + ")'>";
+
+                // keluarkan img thumbnail
+                string += "<img src=" + storageArray.thumb + " class='thumb'>";
+
+                // baca deskripsi untuk menampilkan saat suatu karakter di click
+
+                // keluarkan nama karakter
+                string += "<p>" + storageArray.name + "</p>";
+
+            string += "</a>";
+        string += "</div>";
+
+
+        // check untuk setiap 4 data yang dikeluarkan, buatkan row baru (supaya bisa lebih dinamis dengan DEFINISI-2)
+        if ( (i+1) % 4 == 0) {
+            string += "</div>";
+            string += "<div class='row'>";
+        }
+    }
+
+    string += "</div>";
+
+    // munculkan ke element HTML yg sudah didefinisikan pada DEFINISI-1
+    marvelContainer.innerHTML = string;
+}
+
 // Open/Closed Form Search
 $(".openSearch").click(function() {
     $("#findCharacter").val("");
@@ -255,7 +271,6 @@ $("#hapusFilter").click(function() {
 
     $("body").css({"overflow":"auto"});
 });
-
 
 // Ketika Search dilakukan (pressed Enter), maka update container
 $("#findCharacter").keyup(function(event) {
@@ -340,5 +355,77 @@ $("#findCharacter").keyup(function(event) {
     }
 });
 
+// filter by has Comics
+$("#filterbyComics").on("change", function()
+{
+    var stringFilter = "";
+
+    var checked = $(this).prop("checked");
+    if (checked)
+    {
+        console.log('checkbox di check');
+
+        var dataFilter = $.grep(queryArr, function (e) {
+            return e.num_comic > 0;
+            console.log(e);
+        });
+    }
+    else
+    {
+        console.log('checkbox di un-check');
+
+        var dataFilter = $.grep(queryArr, function (e) {
+            return e;
+            console.log(e);
+        });
+    }
+
+        // Update element HTML
+
+        // mempersiapkan variable dinamis yang dapat diisi dengan content pada API data Marvel characters
+        stringFilter += "<div class='row'>"; // DEFINISI-2, sekedar penanda untuk memudahkan
+
+        // loop, untuk mengeluarkan semua data
+        // karena akan dikeluarkan berupa images & nama, maka cukup array di data.data.results (.length utk mengetahui batas ujung data)
+        for (var i = 0; i < dataFilter.length; i++) {
+            // persingkat data yang akan digunakan pada array ke 'i', dimana nantinya akan dikeluarkan nama & images
+            var storageArray = dataFilter[i];
+
+            //queryStr = { "id" : element.id, "name" : element.name, "thumb" : img_url, "description" : deskripsi, "num_comic" : num_comic };
+
+            // mengeluarkan data dalam 4 kolom (12 dibagi 4 = 3, jadi dibutuhkan col-3)
+            stringFilter += "<div class='col-md-3 marvelChar'>";
+
+                // hyperlink untuk melihat detail (ini open in new page)
+                //stringFilter += "<a href='detail.html?id=" + storageArray.id + "' target='_blank'>";
+
+                // hyperlink untuk melihat detail
+                stringFilter += "<a href='#' onclick='Comics(" + storageArray.id + ")'>";
+
+                    // keluarkan img thumbnail
+                    stringFilter += "<img src=" + storageArray.thumb + " class='thumb'>";
+
+                    // baca deskripsi untuk menampilkan saat suatu karakter di click
+
+                    // keluarkan nama karakter
+                    stringFilter += "<p>" + storageArray.name + "</p>";
+
+                stringFilter += "</a>";
+            stringFilter += "</div>";
+
+
+            // check untuk setiap 4 data yang dikeluarkan, buatkan row baru (supaya bisa lebih dinamis dengan DEFINISI-2)
+            if ( (i+1) % 4 == 0) {
+                stringFilter += "</div>";
+                stringFilter += "<div class='row'>";
+            }
+        }
+
+        stringFilter += "</div>";
+
+        // munculkan ke element HTML yg sudah didefinisikan pada DEFINISI-1
+        marvelContainer.innerHTML = stringFilter;
+});
+
 // render API
-marvel(0); //default offset are 0, to load data start from 0, karena Marvel API tidak bisa meload semua data sekaligus
+marvel(startData); //default offset are 0, to load data start from 0, karena Marvel API tidak bisa meload semua data sekaligus
